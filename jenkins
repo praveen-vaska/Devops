@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    environment {
+        VENV_DIR = 'venv'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/praveen-vaska/Devops.git'  // Replace with your repo URL
+            }
+        }
+
+        stage('Setup Python Environment') {
+            steps {
+                sh 'python3 -m venv $VENV_DIR'
+                sh 'source $VENV_DIR/bin/activate && pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Flask Application') {
+            steps {
+                sh 'source $VENV_DIR/bin/activate && python app.py &'
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                sh 'curl -X POST http://localhost:5000/register -H "Content-Type: application/json" -d \'{"name": "Test", "email": "test@example.com", "phone": "1234567890", "gender": "male"}\''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}
