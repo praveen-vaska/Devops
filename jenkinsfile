@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/praveen-vaska/Devops.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'python app.py' // Change this according to your project
+            }
+        }
+    }
+}
